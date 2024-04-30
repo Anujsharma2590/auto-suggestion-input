@@ -3,6 +3,8 @@ import { mockData } from "./mockData";
 import "./App.css";
 
 function App() {
+  // mock api data
+  // we can make API call here 
   const dataPromise = async (query: string) => {
     const filteredData = mockData.filter((user) => {
       return Object.values(user).some((field) =>
@@ -21,11 +23,11 @@ function App() {
         label="Enter Shopping Cart:"
         placeholder="Search users by ID, address, pincode or name"
         autoComplete={true}
+        promise={dataPromise}
         styles={{
           label: "",
           input: "",
         }}
-        promise={dataPromise}
       />
     </div>
   );

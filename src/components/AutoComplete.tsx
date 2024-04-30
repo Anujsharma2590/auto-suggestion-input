@@ -1,8 +1,8 @@
 import { useState, ChangeEvent, KeyboardEvent, FC, useRef } from "react";
 import DropDownList from "./DropDownList";
 import useFetchUserData from "./useFetchUserData";
-import "./styles.css";
 import { AutoCompletePropsTypes, KeyCodes } from "../types";
+import "./styles.css";
 
 const AutoComplete: FC<AutoCompletePropsTypes> = ({
   id,
