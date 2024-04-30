@@ -1,14 +1,8 @@
-import {
-  useState,
-  ChangeEvent,
-  KeyboardEvent,
-  FC,
-  useRef,
-} from "react";
+import { useState, ChangeEvent, KeyboardEvent, FC, useRef } from "react";
 import DropDownList from "./DropDownList";
 import useFetchUserData from "./useFetchUserData";
-import "./styles.css"
-import { KeyCodes } from "../types";
+import "./styles.css";
+import { KeyCodes, UserDataType } from "../types";
 type Props = {
   id: string;
   name: string;
@@ -20,8 +14,7 @@ type Props = {
     label: string;
     input: string;
   };
-
-  promise: (query: string, signal: AbortSignal) => Promise<Response>;
+  promise: (query: string) => Promise<UserDataType[]>;
 };
 const AutoComplete: FC<Props> = ({
   id,
@@ -35,7 +28,7 @@ const AutoComplete: FC<Props> = ({
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isAutoComplete, setIsAutoComplete] = useState<boolean>(autoComplete);
-   const listBoxRef = useRef<HTMLUListElement>(null);
+  const listBoxRef = useRef<HTMLUListElement>(null);
   const [data, setData, error] = useFetchUserData(
     query,
     promise,
@@ -44,52 +37,60 @@ const AutoComplete: FC<Props> = ({
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
+    if (!event.target.value.length) setActiveIndex(null);
   };
 
   const handleKeyUp = (event: KeyboardEvent<HTMLInputElement>) => {
     const keyCode = event.key;
-    if (keyCode === KeyCodes.ENTER) {
-      //user enter
-      if (activeIndex === null) return;
-      setQuery(data?.[activeIndex].name ?? "");
-      setData(null);
-      setActiveIndex(null);
-      setIsAutoComplete(false);
-      return;
-    }
-    setIsAutoComplete(true);
     if (!data || data.length === 0) return;
-    if (keyCode === KeyCodes.ARROW_DOWN)  {
-      //move down
-      if (activeIndex === null || activeIndex === data.length - 1) {
-        setActiveIndex(0);
-      } else {
-        setActiveIndex((prev) => (prev === null ? 0 : prev + 1));
-      }
-        if (listBoxRef.current &&  activeIndex !== null) {
-        listBoxRef.current.children[activeIndex].scrollIntoView({
+
+    if (listBoxRef.current && activeIndex !== null) {
+      const listBoxItem = listBoxRef.current.children[activeIndex];
+      if (listBoxItem) {
+        listBoxItem.scrollIntoView({
           behavior: "smooth",
-          block: "center",
+          block: keyCode === KeyCodes.ARROW_UP ? "end" : "start",
         });
       }
-    } else if (keyCode === KeyCodes.ARROW_UP) {
-      //move up
-      if (activeIndex === 0) {
-        setActiveIndex(data.length - 1);
-      } else {
-        setActiveIndex((prev) => (prev === null ? data.length - 1 : prev - 1));
+    }
+
+    switch (keyCode) {
+      case KeyCodes.ENTER: {
+        if (activeIndex !== null) {
+          setQuery(data[activeIndex].name);
+          setData(null);
+          setActiveIndex(null);
+          setIsAutoComplete(false);
+        }
+        break;
       }
-        if (listBoxRef.current &&  activeIndex !== null) {
-        listBoxRef.current.children[activeIndex].scrollIntoView({
-          behavior: "smooth",
-          block: "center",
+      case KeyCodes.ARROW_DOWN: {
+        setActiveIndex((prev) => {
+          if (prev === null || prev === data.length - 1) {
+            return 0;
+          } else {
+            return prev + 1;
+          }
         });
+        break;
       }
+      case KeyCodes.ARROW_UP: {
+        setActiveIndex((prev) => {
+          if (prev === null || prev === 0) {
+            return data.length - 1;
+          } else {
+            return prev - 1;
+          }
+        });
+        break;
+      }
+      default:
+        setIsAutoComplete(true);
     }
   };
   return (
     <>
-       <label className={styles.label} htmlFor={name}>
+      <label className={styles.label} htmlFor={name}>
         {label}
       </label>
       <input
@@ -103,9 +104,16 @@ const AutoComplete: FC<Props> = ({
         onKeyUp={handleKeyUp}
       />
       {data && data.length > 0 && (
-        <DropDownList items={data} activeIndex={activeIndex} listBoxRef={listBoxRef} />
+        <DropDownList
+          items={data}
+          activeIndex={activeIndex}
+          listBoxRef={listBoxRef}
+          query={query}
+        />
       )}
-      {query && data && data.length === 0 && <div>Result not found</div>}
+      {query && data && data.length === 0 && (
+        <div className="not-found">No User Found</div>
+      )}
       {error && <div>Something went wrong</div>}
     </>
   );

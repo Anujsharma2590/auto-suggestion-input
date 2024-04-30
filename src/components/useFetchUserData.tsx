@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
+import { UserDataType } from '../types';
 
 
-type PromiseFunction = (query: string, signal: AbortSignal) => Promise<Response>;
+type PromiseFunction = (query: string) => Promise<UserDataType[]>;
 
 const useFetchUserData = (
   query: string,
@@ -12,15 +13,15 @@ const useFetchUserData = (
   const [error, setError] = useState<any | null>(null);
 
   const fetchData = useCallback(
-    async (query: string, signal: AbortSignal) => {
+    async (query: string) => {
       try {
-          const response = await promise(query, signal);
-          if (!response.ok) throw new Error(response.statusText);
-          const data = await response.json();
-        setData(data.results);
+          const response = await promise(query);
+        //   if (!response.ok) throw new Error(response.statusText);
+        //   const data = await response.json();
+        setData(response);
       } catch (err) {
         console.log(err);
-        if (!signal.aborted) setError(err);
+        setError(err);
       }
     }, 
     []
@@ -32,12 +33,11 @@ const useFetchUserData = (
       setError(null);
       return;
     }
-    const controller = new AbortController();
-    const signal = controller.signal;
+  
 
-    fetchData(query, signal);
+    fetchData(query);
     return () => {
-      controller.abort();
+      
     };
   }, [query, fetchData, autoComplete]);
 

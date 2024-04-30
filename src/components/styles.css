@@ -17,7 +17,7 @@ input {
   border: 1px solid #ccc;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 320px;
+  width: 320px;
 }
 
 /* Styles for each dropdown item */
@@ -33,11 +33,20 @@ input {
 }
 
 /* Hover effect for items */
-.listBoxItem:hover {
+/* .listBoxItem:hover {
   background-color: #d4cdcd;
+} */
+
+.not-found {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  border: 1px solid #ccc;
+  width: 320px;
+  color: darkgray;
 }
 
-
-
-
-
+.highlight {
+  color: blue;
+}
