@@ -3,7 +3,7 @@ import { DropDownListPropsType, HIGHLIGHT_CLASS, QUERYTEXT_CLASS } from "../type
 import "./styles.css";
 
 
-const DropDownList: FC<DropDownListPropsType> = ({
+const AutocompleteList: FC<DropDownListPropsType> = ({
   items,
   activeIndex,
   listBoxRef,
@@ -70,4 +70,4 @@ const DropDownList: FC<DropDownListPropsType> = ({
   );
 };
 
-export default DropDownList;
+export default AutocompleteList ;

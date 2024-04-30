@@ -5,7 +5,7 @@ import "./App.css";
 function App() {
   // mock api data
   // we can make API call here 
-  const dataPromise = async (query: string) => {
+  const fetchData = async (query: string) => {
     const filteredData = mockData.filter((user) => {
       return Object.values(user).some((field) =>
         field.toString().toLowerCase().includes(query.toLowerCase())
@@ -20,13 +20,13 @@ function App() {
       <AutoComplete
         id="shoppingCart"
         name="shoppingCart"
-        label="Enter Shopping Cart:"
+        label="Enter shopping cart items:"
         placeholder="Search users by ID, address, pincode or name"
         autoComplete={true}
-        promise={dataPromise}
+        fetchData={fetchData}
         styles={{
-          label: "",
-          input: "",
+          label: "label",
+          input: "input",
         }}
       />
     </div>

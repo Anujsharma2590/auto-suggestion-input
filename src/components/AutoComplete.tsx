@@ -1,7 +1,8 @@
 import { useState, ChangeEvent, KeyboardEvent, FC, useRef } from "react";
-import DropDownList from "./DropDownList";
+
 import useFetchUserData from "./useFetchUserData";
 import { AutoCompletePropsTypes, KeyCodes } from "../types";
+import AutocompleteList from "./AutocompleteList";
 import "./styles.css";
 
 const AutoComplete: FC<AutoCompletePropsTypes> = ({
@@ -11,17 +12,17 @@ const AutoComplete: FC<AutoCompletePropsTypes> = ({
   label,
   autoComplete,
   styles,
-  promise,
+  fetchData
 }) => {
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isAutoComplete, setIsAutoComplete] = useState<boolean>(autoComplete);
-  const listBoxRef = useRef<HTMLUListElement>(null);
   const [data, setData, error] = useFetchUserData(
     query,
-    promise,
+    fetchData,
     isAutoComplete
   );
+  const listBoxRef = useRef<HTMLUListElement>(null);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
@@ -100,7 +101,7 @@ const AutoComplete: FC<AutoCompletePropsTypes> = ({
         onKeyUp={handleKeyUp}
       />
       {data && data.length > 0 && (
-        <DropDownList
+        <AutocompleteList 
           items={data}
           activeIndex={activeIndex}
           listBoxRef={listBoxRef}

@@ -1,11 +1,4 @@
-label {
-  font-size: 20px;
-}
 
-input {
-  padding: 10px;
-  width: 300px;
-}
 
 /* Styles for the dropdown container */
 .listBoxContainer {
@@ -31,7 +24,6 @@ input {
 .listBoxItem.activeItem {
   background-color: #d4cdcd;
 }
-
 
 .not-found {
   display: flex;

@@ -24,7 +24,7 @@ export type AutoCompletePropsTypes = {
     label: string;
     input: string;
   };
-  promise: (query: string) => Promise<UserDataType[]>;
+  fetchData: (query: string) => Promise<UserDataType[]>;
 };
 
 export type DropDownListPropsType = {
