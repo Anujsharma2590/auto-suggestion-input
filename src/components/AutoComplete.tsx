@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, KeyboardEvent, FC, useRef } from "react";
+import { useState, ChangeEvent, FC, useRef, useEffect, useCallback } from "react";
 
 import useFetchUserData from "./useFetchUserData";
 import { AutoCompletePropsTypes, KeyCodes, UserDataType } from "../types";
@@ -12,83 +12,76 @@ const AutoComplete: FC<AutoCompletePropsTypes<UserDataType>> = ({
   label,
   autoComplete,
   styles,
-  fetchData
+  fetchData,
 }) => {
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [isAutoComplete, setIsAutoComplete] = useState<boolean>(autoComplete);
-  const [data, setData, error] = useFetchUserData(
-    query,
-    fetchData,
-    isAutoComplete
-  );
+  const [isKeyboardActive, setIsKeyboardActive] = useState(false);
+  const [data, error] = useFetchUserData(query, fetchData, autoComplete);
   const listBoxRef = useRef<HTMLUListElement>(null);
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setQuery(value);
     if (!value) {
       setActiveIndex(null);
-      setIsAutoComplete(true);
-    } 
-  };
-
-  const handleKeyUp = (event: KeyboardEvent<HTMLInputElement>) => {
-    const keyCode = event.key;
-    if (!data || data.length === 0) return;
-
-    if (listBoxRef.current && activeIndex !== null) {
-      const listBoxItem = listBoxRef.current.children[activeIndex];
-      if (listBoxItem) {
-        listBoxItem.scrollIntoView({
-          behavior: "smooth",
-          block: keyCode === KeyCodes.ARROW_UP ? "end" : "start",
-        });
-      }
     }
+  }, []);
 
-    switch (keyCode) {
-      case KeyCodes.ENTER: {
-        if (activeIndex !== null) {
-          setQuery(data[activeIndex].name);
-          setData(null);
-          setActiveIndex(null);
-          setIsAutoComplete(false);
+  const handleMouseEnter = useCallback((index: number) => {
+    if (!isKeyboardActive) setActiveIndex(index);
+  }, [isKeyboardActive]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (!isKeyboardActive) setActiveIndex(null);
+  }, [isKeyboardActive]);
+
+    const navigate = useCallback((step: number) => {
+    setActiveIndex((prevSelectedItem) => {
+      if (prevSelectedItem === null) {
+        return 0;
+      } else {
+        let newIndex = prevSelectedItem + step;
+        if (newIndex < 0) {
+          return data.length - 1;
+        } else if (newIndex >= data.length) {
+          return 0;
+        } else {
+          return newIndex;
         }
-        break;
       }
-      case KeyCodes.ARROW_DOWN: {
-        setActiveIndex((prev) => {
-          if (prev === null || prev === data.length - 1) {
-            return 0;
-          } else {
-            return prev + 1;
-          }
-        });
-        break;
+    });
+  }, [data]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: any) => {
+      setIsKeyboardActive(true);
+      if (!data || data.length === 0) return;
+
+      if (event.key === KeyCodes.ARROW_UP) {
+        event.preventDefault();
+        navigate(-1);
+      } else if (event.key === KeyCodes.ARROW_DOWN) {
+        event.preventDefault();
+        navigate(1);
       }
-      case KeyCodes.ARROW_UP: {
-        setActiveIndex((prev) => {
-          if (prev === null || prev === 0) {
-            return data.length - 1;
-          } else {
-            return prev - 1;
-          }
-        });
-        break;
-      }
-      default:
-        setIsAutoComplete(true);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isKeyboardActive, data, navigate]);
+
+  useEffect(() => {
+    if (activeIndex !== null && listBoxRef.current) {
+      const listBoxItem = listBoxRef.current.children[activeIndex];
+      listBoxItem?.scrollIntoView({ block: "nearest", behavior: "smooth" });
     }
-  };
+  }, [activeIndex]);
 
-  const handleMouseEnter = (index: number) => {
-    setActiveIndex(index);
-  };
 
-  const handleMouseLeave = () => {
-    setActiveIndex(null);
-  };
   return (
     <>
       <label className={styles.label} htmlFor={name}>
@@ -102,17 +95,18 @@ const AutoComplete: FC<AutoCompletePropsTypes<UserDataType>> = ({
         value={query}
         autoComplete="off"
         onChange={handleChange}
-        onKeyUp={handleKeyUp}
       />
       {data && !!data.length && (
-        <AutocompleteList 
-          items={data}
-          activeIndex={activeIndex}
-          listBoxRef={listBoxRef}
-          query={query}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        />
+        <div onMouseMove={() => setIsKeyboardActive(false)}>
+          <AutocompleteList
+            items={data}
+            activeIndex={activeIndex}
+            listBoxRef={listBoxRef}
+            query={query}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          />
+        </div>
       )}
       {query && data && !data.length && (
         <div className="not-found">No User Found</div>

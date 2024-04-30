@@ -32,7 +32,7 @@ const useFetchUserData = (
     return () => {};
   }, [query, fetchData, autoComplete]);
 
-  return [data, setData, error];
+  return [data, error];
 };
 
 export default useFetchUserData;
