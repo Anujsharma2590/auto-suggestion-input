@@ -25,8 +25,12 @@ const AutoComplete: FC<AutoCompletePropsTypes> = ({
   const listBoxRef = useRef<HTMLUListElement>(null);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-    if (!event.target.value.length) setActiveIndex(null);
+    const value = event.target.value;
+    setQuery(value);
+    if (!value) {
+      setActiveIndex(null);
+      setIsAutoComplete(true);
+    } 
   };
 
   const handleKeyUp = (event: KeyboardEvent<HTMLInputElement>) => {
