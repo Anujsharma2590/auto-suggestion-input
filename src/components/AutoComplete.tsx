@@ -1,11 +1,11 @@
 import { useState, ChangeEvent, KeyboardEvent, FC, useRef } from "react";
 
 import useFetchUserData from "./useFetchUserData";
-import { AutoCompletePropsTypes, KeyCodes } from "../types";
+import { AutoCompletePropsTypes, KeyCodes, UserDataType } from "../types";
 import AutocompleteList from "./AutocompleteList";
 import "./styles.css";
 
-const AutoComplete: FC<AutoCompletePropsTypes> = ({
+const AutoComplete: FC<AutoCompletePropsTypes<UserDataType>> = ({
   id,
   name,
   placeholder,
@@ -104,7 +104,7 @@ const AutoComplete: FC<AutoCompletePropsTypes> = ({
         onChange={handleChange}
         onKeyUp={handleKeyUp}
       />
-      {data && data.length > 0 && (
+      {data && !!data.length && (
         <AutocompleteList 
           items={data}
           activeIndex={activeIndex}
@@ -114,7 +114,7 @@ const AutoComplete: FC<AutoCompletePropsTypes> = ({
           onMouseLeave={handleMouseLeave}
         />
       )}
-      {query && data && data.length === 0 && (
+      {query && data && !data.length && (
         <div className="not-found">No User Found</div>
       )}
       {error && <div>Something went wrong</div>}

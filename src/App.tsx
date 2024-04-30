@@ -17,6 +17,7 @@ function App() {
   return (
     <div className="App">
       <h1>SuggestionBox</h1>
+
       <AutoComplete
         id="shoppingCart"
         name="shoppingCart"

@@ -14,17 +14,20 @@ export enum KeyCodes {
   ARROW_UP = "ArrowUp",
 }
 
-export type AutoCompletePropsTypes = {
+export type AutoCompletePropsTypes<D> = {
   id: string;
   name: string;
   placeholder: string;
   label: string;
   autoComplete: boolean;
-  styles: {
-    label: string;
-    input: string;
-  };
-  fetchData: (query: string) => Promise<UserDataType[]>;
+  styles: AutoCompleteStyleType;
+
+  fetchData: (query: string) => Promise<D[]>;
+};
+
+export type AutoCompleteStyleType = {
+  label: string;
+  input: string;
 };
 
 export type DropDownListPropsType = {
