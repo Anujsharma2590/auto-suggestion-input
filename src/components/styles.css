@@ -32,10 +32,6 @@ input {
   background-color: #d4cdcd;
 }
 
-/* Hover effect for items */
-/* .listBoxItem:hover {
-  background-color: #d4cdcd;
-} */
 
 .not-found {
   display: flex;
@@ -49,4 +45,9 @@ input {
 
 .highlight {
   color: blue;
+}
+
+.query-text {
+  color: blue;
+  font-weight: bold;
 }

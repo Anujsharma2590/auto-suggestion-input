@@ -2,22 +2,9 @@ import { useState, ChangeEvent, KeyboardEvent, FC, useRef } from "react";
 import DropDownList from "./DropDownList";
 import useFetchUserData from "./useFetchUserData";
 import "./styles.css";
-import { KeyCodes, UserDataType } from "../types";
+import { AutoCompletePropsTypes, KeyCodes } from "../types";
 
-type Props = {
-  id: string;
-  name: string;
-  placeholder: string;
-  label: string;
-  autoComplete: boolean;
-  styles: {
-    label: string;
-    input: string;
-  };
-  promise: (query: string) => Promise<UserDataType[]>;
-};
-
-const AutoComplete: FC<Props> = ({
+const AutoComplete: FC<AutoCompletePropsTypes> = ({
   id,
   name,
   placeholder,
@@ -50,7 +37,7 @@ const AutoComplete: FC<Props> = ({
       if (listBoxItem) {
         listBoxItem.scrollIntoView({
           behavior: "smooth",
-          block: keyCode === KeyCodes.ARROW_UP ? "end" : "center",
+          block: keyCode === KeyCodes.ARROW_UP ? "center" : "center",
         });
       }
     }
@@ -91,9 +78,9 @@ const AutoComplete: FC<Props> = ({
   };
 
   const handleMouseEnter = (index: number) => {
-    setActiveIndex(index); 
+    setActiveIndex(index);
   };
-  
+
   const handleMouseLeave = () => {
     setActiveIndex(null);
   };

@@ -11,6 +11,7 @@ type DropDownListPropsType = {
   onMouseLeave: () => void;
 };
 const HIGHLIGHT_CLASS = "highlight";
+const QUERYTEXT = "query-text";
 const DropDownList: FC<DropDownListPropsType> = ({
   items,
   activeIndex,
@@ -34,7 +35,7 @@ const DropDownList: FC<DropDownListPropsType> = ({
     );
 
     if (queryMatch) {
-      return `<span>("${queryMatch}" found in items)</span>`;
+      return `<span> <span class=${QUERYTEXT}>"${queryMatch}" </span> found in items</span>`;
     }
 
     return "";
