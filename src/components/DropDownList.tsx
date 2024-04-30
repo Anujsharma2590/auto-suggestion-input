@@ -1,17 +1,8 @@
-import React, { FC, RefObject } from "react";
-import { UserDataType } from "../types";
+import  { FC } from "react";
+import { DropDownListPropsType, HIGHLIGHT_CLASS, QUERYTEXT_CLASS } from "../types";
 import "./styles.css";
 
-type DropDownListPropsType = {
-  items: UserDataType[];
-  activeIndex: number | string | null;
-  listBoxRef: RefObject<HTMLUListElement>;
-  query: string;
-  onMouseEnter: (index: number) => void;
-  onMouseLeave: () => void;
-};
-const HIGHLIGHT_CLASS = "highlight";
-const QUERYTEXT = "query-text";
+
 const DropDownList: FC<DropDownListPropsType> = ({
   items,
   activeIndex,
@@ -35,7 +26,7 @@ const DropDownList: FC<DropDownListPropsType> = ({
     );
 
     if (queryMatch) {
-      return `<span> <span class=${QUERYTEXT}>"${queryMatch}" </span> found in items</span>`;
+      return `<span> <span class=${QUERYTEXT_CLASS}>"${queryMatch}" </span> found in items</span>`;
     }
 
     return "";
