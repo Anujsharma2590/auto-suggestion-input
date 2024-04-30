@@ -42,7 +42,7 @@ const AutoComplete: FC<AutoCompletePropsTypes<UserDataType>> = ({
       if (listBoxItem) {
         listBoxItem.scrollIntoView({
           behavior: "smooth",
-          block: keyCode === KeyCodes.ARROW_UP ? "center" : "center",
+          block: keyCode === KeyCodes.ARROW_UP ? "end" : "start",
         });
       }
     }
