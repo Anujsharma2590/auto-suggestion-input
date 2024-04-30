@@ -3,19 +3,20 @@ import DropDownList from "./DropDownList";
 import useFetchUserData from "./useFetchUserData";
 import "./styles.css";
 import { KeyCodes, UserDataType } from "../types";
+
 type Props = {
   id: string;
   name: string;
   placeholder: string;
   label: string;
   autoComplete: boolean;
-
   styles: {
     label: string;
     input: string;
   };
   promise: (query: string) => Promise<UserDataType[]>;
 };
+
 const AutoComplete: FC<Props> = ({
   id,
   name,
@@ -49,7 +50,7 @@ const AutoComplete: FC<Props> = ({
       if (listBoxItem) {
         listBoxItem.scrollIntoView({
           behavior: "smooth",
-          block: keyCode === KeyCodes.ARROW_UP ? "end" : "start",
+          block: keyCode === KeyCodes.ARROW_UP ? "end" : "center",
         });
       }
     }
@@ -88,6 +89,14 @@ const AutoComplete: FC<Props> = ({
         setIsAutoComplete(true);
     }
   };
+
+  const handleMouseEnter = (index: number) => {
+    setActiveIndex(index); 
+  };
+  
+  const handleMouseLeave = () => {
+    setActiveIndex(null);
+  };
   return (
     <>
       <label className={styles.label} htmlFor={name}>
@@ -109,6 +118,8 @@ const AutoComplete: FC<Props> = ({
           activeIndex={activeIndex}
           listBoxRef={listBoxRef}
           query={query}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         />
       )}
       {query && data && data.length === 0 && (

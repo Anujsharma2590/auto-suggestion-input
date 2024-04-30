@@ -7,6 +7,8 @@ type DropDownListPropsType = {
   activeIndex: number | string | null;
   listBoxRef: RefObject<HTMLUListElement>;
   query: string;
+  onMouseEnter: (index: number) => void;
+  onMouseLeave: () => void;
 };
 const HIGHLIGHT_CLASS = "highlight";
 const DropDownList: FC<DropDownListPropsType> = ({
@@ -14,6 +16,8 @@ const DropDownList: FC<DropDownListPropsType> = ({
   activeIndex,
   listBoxRef,
   query,
+  onMouseEnter,
+  onMouseLeave,
 }) => {
   const highlightRegex = new RegExp(`(${query})`, "i");
 
@@ -41,9 +45,14 @@ const DropDownList: FC<DropDownListPropsType> = ({
       {items.map((item, index) => (
         <li
           className={`listBoxItem ${
-            index === activeIndex ? "activeItem" : " "
+            index === activeIndex 
+              ? "activeItem"
+              : ""
           }`}
           key={index}
+          onMouseEnter={(e) => { e.stopPropagation(); onMouseEnter(index) }}
+          onMouseLeave={onMouseLeave}
+          style={{ cursor: "default" }}
         >
           <div>
             <strong
