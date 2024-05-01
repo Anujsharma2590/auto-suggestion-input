@@ -4,6 +4,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
+![suggestion-input](https://github.com/Anujsharma2590/auto-suggestion-input/assets/60852406/fc691037-75fa-42e2-9012-59bd17533e8e)
+
+
 In the project directory, you can run:
 
 ### `npm start`
